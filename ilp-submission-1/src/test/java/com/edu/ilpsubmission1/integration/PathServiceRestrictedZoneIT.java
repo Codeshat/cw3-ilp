@@ -9,6 +9,7 @@ import com.edu.ilpsubmission1.service.GeometryService;
 import com.edu.ilpsubmission1.service.PathService;
 import com.edu.ilpsubmission1.testutil.GeometryTestUtils;
 import com.edu.ilpsubmission1.testutil.TestFixtures;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.when;
 
+@Tag("integration")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class PathServiceRestrictedZoneIT {
 

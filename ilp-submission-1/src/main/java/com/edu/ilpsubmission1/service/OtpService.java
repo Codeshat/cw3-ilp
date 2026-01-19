@@ -8,6 +8,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class OtpService {
 
     private final JavaMailSender mailSender;
+    private final Clock clock;
 
     @Value("${otp.expiry.minutes:5}")
     private int otpExpiryMinutes;
@@ -164,6 +167,9 @@ public class OtpService {
         }
 
         return isValid;
+    }
+    void storeOtpForTest(String key, String otp, LocalDateTime expiry) {
+        otpStore.put(key, new OtpData(otp, expiry));
     }
 
 

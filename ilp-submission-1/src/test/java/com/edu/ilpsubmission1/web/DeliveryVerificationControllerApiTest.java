@@ -4,6 +4,7 @@ import com.edu.ilpsubmission1.dtos.FaceMatchResponse;
 import com.edu.ilpsubmission1.service.DeliveryVerificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * API Level Tests for Delivery Verification Controller
  * Tests HTTP contract, request validation, and response formats
  */
+@Tag("api")
 @WebMvcTest(DeliveryVerificationController.class)
 class DeliveryVerificationControllerApiTest {
 

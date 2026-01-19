@@ -1,6 +1,7 @@
 package com.edu.ilpsubmission1.system;
 
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -9,7 +10,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 class DeliveryWorkflowE2ETest extends AbstractE2ETest {
-
+    @Tag("system")
     @Test
     void endToEndDeliveryWorkflowCompletesSuccessfully() {
         // 1️⃣ Register

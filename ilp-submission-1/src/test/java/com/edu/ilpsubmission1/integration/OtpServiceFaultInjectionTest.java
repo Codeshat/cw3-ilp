@@ -1,7 +1,9 @@
-package com.edu.ilpsubmission1.service;
+package com.edu.ilpsubmission1.integration;
 
+import com.edu.ilpsubmission1.service.OtpService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -27,6 +29,7 @@ import static org.mockito.Mockito.*;
  * Fault Injection Tests for OTP Service
  * Tests security robustness under adverse conditions
  */
+@Tag("integration")
 class OtpServiceFaultInjectionTest {
 
     @Mock

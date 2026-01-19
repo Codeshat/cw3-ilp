@@ -14,6 +14,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@Tag("property")
 class NoFlyZonePropertyTest {
 
     private final AStarPathfinder pathfinder = mock(AStarPathfinder.class);

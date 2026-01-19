@@ -6,6 +6,7 @@ import com.edu.ilpsubmission1.exception.BadRequestException;
 import com.edu.ilpsubmission1.exception.InvalidRegionException;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Tag("unit")
 class DroneServiceTest {
 
     private DroneService droneService;

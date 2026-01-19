@@ -4,6 +4,7 @@ import com.edu.ilpsubmission1.client.FaceRecognitionClient;
 import com.edu.ilpsubmission1.dtos.FaceMatchResponse;
 import com.edu.ilpsubmission1.service.DeliveryVerificationService;
 import com.edu.ilpsubmission1.service.OtpService;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+@Tag("integration")
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.NONE,
         properties = {

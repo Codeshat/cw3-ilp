@@ -3,6 +3,7 @@ package com.edu.ilpsubmission1.service;
 import com.edu.ilpsubmission1.dtos.Position;
 import com.edu.ilpsubmission1.dtos.Region;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class GeometryServiceTest {
 

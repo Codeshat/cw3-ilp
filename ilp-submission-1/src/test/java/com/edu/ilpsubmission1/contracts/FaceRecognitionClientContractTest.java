@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.*;
  * Contract Tests for Face Recognition Service
  * Ensures Java client stays compatible with Python service contract
  */
+@Tag("contract")
 class FaceRecognitionClientContractTest {
 
     private static WireMockServer wireMockServer;

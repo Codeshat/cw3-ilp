@@ -4,12 +4,14 @@ import com.edu.ilpsubmission1.dtos.Region;
 import com.edu.ilpsubmission1.service.AStarPathfinder;
 import com.edu.ilpsubmission1.service.GeometryService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("contract")
 public class AStarPathfinderContractTest {
     private GeometryService geometryService;
     private AStarPathfinder pathfinder;
