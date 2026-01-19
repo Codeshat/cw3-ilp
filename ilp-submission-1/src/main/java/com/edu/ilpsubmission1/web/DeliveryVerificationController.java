@@ -55,6 +55,11 @@ public class DeliveryVerificationController {
         return ResponseEntity.ok(Map.of("otpVerified", verified));
     }
 
+    @GetMapping("/otp-status/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("OK");
+    }
+
     @PostMapping("/verify/{deliveryId}")
     public ResponseEntity<?> verifyDelivery(
             @PathVariable String deliveryId,

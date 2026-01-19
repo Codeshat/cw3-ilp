@@ -3,449 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drone Delivery System</title>
+    <title>Orbital Drone Command</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #00f3ff;
+            --secondary: #0066ff;
+            --accent: #ff0055;
+            --bg-dark: #050a14;
+            --glass: rgba(10, 25, 50, 0.7);
+            --border: rgba(0, 243, 255, 0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--bg-dark);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-dark);
+            background-image:
+                    radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
+                    radial-gradient(circle at 90% 80%, rgba(255, 0, 85, 0.05) 0%, transparent 20%),
+                    linear-gradient(0deg, rgba(0,0,0,0.8), transparent 1px),
+                    linear-gradient(90deg, rgba(0,0,0,0.8), transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            color: #e0f7ff;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        .container {
+        /* Layout */
+        .grid-container {
             display: grid;
-            grid-template-columns: 300px 1fr 300px;
-            gap: 20px;
-            max-width: 1800px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            background: rgba(20, 20, 20, 0.6);
-            border: 1px solid #00ff41;
-            border-radius: 12px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
-        }
-
-        .sidebar h2 {
-            color: #00ff41;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 2px solid #00ff41;
-            padding-bottom: 10px;
-        }
-
-        .stat-card {
-            background: rgba(0, 255, 65, 0.05);
-            border: 1px solid rgba(0, 255, 65, 0.3);
-            border-radius: 8px;
+            grid-template-columns: 300px 1fr 320px;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+            gap: 15px;
             padding: 15px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
         }
 
-        .stat-card:hover {
-            background: rgba(0, 255, 65, 0.1);
-            transform: translateX(5px);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            color: #00ff41;
-            font-weight: bold;
-        }
-
-        .stat-label {
-            color: #888;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-
-        .activity-item {
-            background: rgba(0, 255, 65, 0.03);
-            border-left: 3px solid #00ff41;
-            padding: 12px;
-            margin-bottom: 12px;
+        /* Common Glass Panel */
+        .panel {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
             border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .activity-item:hover {
-            background: rgba(0, 255, 65, 0.08);
-            transform: translateX(5px);
-        }
-
-        .activity-time {
-            color: #00ff41;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .activity-event {
-            color: #e0e0e0;
-            margin: 5px 0;
-        }
-
-        .activity-drone {
-            color: #888;
-            font-size: 0.85rem;
-        }
-
-        /* Main Content */
-        .main-content {
+            padding: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 20px;
         }
 
-        .header {
-            text-align: center;
-            padding: 30px 0;
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.5;
         }
 
-        .header h1 {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
+        h2 {
+            color: var(--primary);
+            font-size: 1.2rem;
             text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
-        .header p {
-            color: #888;
-            font-size: 1.1rem;
-        }
-
-        .section {
-            background: rgba(20, 20, 20, 0.8);
-            border: 1px solid #00ff41;
-            border-radius: 12px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .section:hover {
-            box-shadow: 0 0 40px rgba(0, 255, 65, 0.2);
-        }
-
-        .section h2 {
-            color: #00ff41;
-            font-size: 1.5rem;
+            letter-spacing: 2px;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
         }
 
-        .step-number {
-            background: #00ff41;
-            color: #000;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+        /* Left Sidebar: Stats */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
+        .stat-card {
+            background: rgba(0, 243, 255, 0.05);
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        /* Center: Main Interface */
+        .main-stage {
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-title h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.4));
+        }
+
+        /* Radar Viz */
+        .radar-container {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            background: radial-gradient(circle, rgba(0,50,100,0.2) 0%, rgba(0,10,20,0.8) 100%);
+        }
+
+        canvas#radar-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Forms & Inputs */
         .input-group {
-            margin: 20px 0;
+            margin-bottom: 20px;
+            position: relative;
         }
 
-        .input-group label {
-            display: block;
-            color: #00ff41;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        input[type="email"],
-        input[type="text"] {
+        input[type="email"], input[type="text"], input[type="number"] {
             width: 100%;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #00ff41;
-            border-radius: 8px;
-            color: #e0e0e0;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 15px;
+            font-family: 'Roboto Mono', monospace;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            border-radius: 4px;
+            transition: 0.3s;
         }
 
-        input[type="email"]:focus,
-        input[type="text"]:focus {
+        input:focus {
             outline: none;
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
-            border-color: #00ff41;
-        }
-
-        video, canvas {
-            width: 100%;
-            max-width: 500px;
-            border: 2px solid #00ff41;
-            border-radius: 12px;
-            margin: 20px auto;
-            display: block;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
         }
 
         button {
-            background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
-            color: #000;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
             border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            margin: 5px;
-            transition: all 0.3s ease;
+            color: #000;
+            font-weight: 700;
+            padding: 12px 25px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            margin: 5px;
         }
 
-        button:hover {
+        button:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 255, 65, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.4);
+            color: white;
         }
 
         button:disabled {
             background: #333;
             color: #666;
             cursor: not-allowed;
-            transform: none;
+            box-shadow: none;
         }
 
-        .hidden {
-            display: none !important;
+        /* Camera */
+        video, canvas.capture-canvas {
+            width: 100%;
+            max-width: 480px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            margin: 10px auto;
+            display: block;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
         }
 
-        .result {
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            font-weight: 500;
+        /* Right Sidebar: Tools */
+        .tool-section {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
         }
 
-        .success {
-            background: rgba(0, 255, 65, 0.1);
-            color: #00ff41;
-            border: 1px solid #00ff41;
+        .json-dump {
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--primary);
+            height: 150px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border-left: 2px solid var(--secondary);
+            margin-top: 10px;
         }
 
-        .error {
-            background: rgba(255, 0, 65, 0.1);
-            color: #ff0041;
-            border: 1px solid #ff0041;
+        /* Bottom Console */
+        .console-panel {
+            grid-column: 1 / -1;
+            height: 150px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.85rem;
         }
 
-        .loading {
+        .console-output {
+            height: 100%;
+            overflow-y: auto;
+            color: #888;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .log-time { color: var(--secondary); margin-right: 10px; }
+        .log-sys { color: var(--accent); font-weight: bold; margin-right: 10px; }
+        .log-msg { color: #ccc; }
+        .log-success { color: var(--primary); }
+
+        /* Utilities */
+        .hidden { display: none !important; }
+
+        .section-container {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Progress Bar */
+        .loading-container {
             text-align: center;
             padding: 40px;
         }
-
-        .spinner {
-            border: 4px solid rgba(0, 255, 65, 0.1);
-            border-top: 4px solid #00ff41;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .drone-icon {
-            font-size: 3rem;
-            text-align: center;
-            margin: 20px 0;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .progress-bar {
+        .progress-track {
             width: 100%;
-            height: 4px;
-            background: rgba(0, 255, 65, 0.1);
-            border-radius: 2px;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
             margin: 20px 0;
+            position: relative;
             overflow: hidden;
         }
-
-        .progress-fill {
+        .progress-bar {
             height: 100%;
-            background: #00ff41;
+            background: var(--primary);
             width: 0%;
-            transition: width 0.3s ease;
-            box-shadow: 0 0 10px #00ff41;
+            box-shadow: 0 0 10px var(--primary);
+            transition: width 0.1s linear;
         }
 
-        @media (max-width: 1400px) {
-            .container {
-                grid-template-columns: 250px 1fr;
-            }
-            .sidebar.right {
-                display: none;
-            }
-        }
-
-        @media (max-width: 900px) {
-            .container {
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid-container {
                 grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                height: auto;
             }
-            .sidebar {
-                display: none;
-            }
+            .console-panel { height: 200px; }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <!-- Left Sidebar -->
-    <div class="sidebar left">
-        <h2>🚁 Fleet Status</h2>
-        <div class="stat-card">
-            <div class="stat-number" id="total-drones">--</div>
-            <div class="stat-label">Total Drones</div>
+
+<div class="grid-container">
+
+    <div class="panel">
+        <h2><span style="color:var(--accent)">///</span> Fleet Status</h2>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="total-drones">--</div>
+                <div class="stat-label">Total Units</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="available-drones">--</div>
+                <div class="stat-label">Standby</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="active-drones">--</div>
+                <div class="stat-label">In Flight</div>
+            </div>
+            <div class="stat-card" style="border-color: rgba(255,0,85,0.3)">
+                <div class="stat-number" id="maintenance-drones" style="color: var(--accent)">--</div>
+                <div class="stat-label">Maintenance</div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-number" id="available-drones">--</div>
-            <div class="stat-label">Available</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" id="active-drones">--</div>
-            <div class="stat-label">Active Deliveries</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" id="maintenance-drones">--</div>
-            <div class="stat-label">In Maintenance</div>
+
+        <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+            <p style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">FILTER PROTOCOLS</p>
+            <button id="btn-check-cooling" style="width: 100%; font-size: 0.8rem; background: rgba(0,243,255,0.1); border: 1px solid var(--primary); color: var(--primary);">
+                Show Cooling Units Only
+            </button>
+            <div id="cooling-result" style="font-size: 0.8rem; margin-top: 5px; color: #fff;"></div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="header">
-            <h1>🚁 Drone Delivery System</h1>
-            <p>Secure face verification for package delivery</p>
+    <div class="panel main-stage">
+        <div class="header-title">
+            <h1>Orbital Delivery</h1>
+            <p style="letter-spacing: 3px; color: var(--primary);">SECURE BIOMETRIC LOGISTICS</p>
         </div>
 
-        <!-- Step 1: Registration -->
-        <div class="section" id="register-section">
-            <h2><span class="step-number">1</span> Register Your Delivery</h2>
-            <p style="color: #888; margin-bottom: 20px;">Provide your email and capture your ID photo for secure verification</p>
-
-            <div class="input-group">
-                <label for="email-input">Email Address</label>
-                <input type="email" id="email-input" placeholder="your.email@example.com" required>
-            </div>
-
-            <video id="register-video" autoplay></video>
-            <canvas id="register-canvas" class="hidden"></canvas>
-
-            <div style="text-align: center;">
-                <button id="start-register-camera">📷 Start Camera</button>
-                <button id="capture-register" disabled>📸 Capture Photo</button>
-                <button id="submit-register" disabled>✉️ Submit & Send OTP</button>
-            </div>
-            <div id="register-result"></div>
+        <div class="radar-container">
+            <canvas id="radar-canvas"></canvas>
+            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: var(--primary);">LIVE TRAFFIC SIMULATION</div>
         </div>
 
-        <!-- Step 2: OTP Verification -->
-        <div class="section hidden" id="otp-section">
-            <h2><span class="step-number">2</span> Verify Your Email</h2>
-            <p style="color: #888; margin-bottom: 20px;">Enter the 6-digit code sent to your email</p>
-
+        <div id="register-section" class="section-container">
+            <h2>01 // INITIATE REQUEST</h2>
             <div class="input-group">
-                <label for="otp-input">Verification Code</label>
-                <input type="text" id="otp-input" placeholder="000000" maxlength="6" pattern="[0-9]{6}">
+                <input type="email" id="email-input" placeholder="ENTER RECIPIENT EMAIL IDENTIFIER" required>
             </div>
 
             <div style="text-align: center;">
-                <button id="verify-otp">✓ Verify Code</button>
-            </div>
-            <div id="otp-result"></div>
-        </div>
+                <video id="register-video" autoplay muted playsinline></video>
+                <canvas id="register-canvas" class="capture-canvas hidden"></canvas>
 
-        <!-- Step 3: Delivery in Progress -->
-        <div class="section hidden" id="delivery-section">
-            <h2><span class="step-number">3</span> Delivery in Progress</h2>
-            <div class="loading">
-                <div class="drone-icon">🚁</div>
-                <div class="spinner"></div>
-                <p style="font-size: 1.2rem; margin-top: 20px;">Drone is en route to your location...</p>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="delivery-progress"></div>
+                <div style="margin-top: 15px;">
+                    <button id="start-register-camera">Activate Camera</button>
+                    <button id="capture-register" disabled>Capture ID</button>
+                    <button id="submit-register" disabled style="background: linear-gradient(135deg, var(--accent), #ff5500); color: white;">Transmit Request</button>
                 </div>
             </div>
         </div>
 
-        <!-- Step 4: Final Verification -->
-        <div class="section hidden" id="verify-section">
-            <h2><span class="step-number">4</span> Verify Your Identity</h2>
-            <p style="color: #888; margin-bottom: 20px;">The drone has arrived! Please verify your identity to receive your package</p>
-
-            <video id="verify-video" autoplay></video>
-            <canvas id="verify-canvas" class="hidden"></canvas>
-
-            <div style="text-align: center;">
-                <button id="start-verify-camera">📷 Start Camera</button>
-                <button id="capture-verify" disabled>📸 Capture Photo</button>
-                <button id="submit-verify" disabled>✓ Verify Identity</button>
+        <div id="otp-section" class="section-container hidden">
+            <h2>02 // SECURE HANDSHAKE</h2>
+            <p style="color: #aaa; margin-bottom: 15px;">Enter 6-digit encryption key sent to email.</p>
+            <div class="input-group">
+                <input type="text" id="otp-input" placeholder="X X X X X X" maxlength="6" style="font-size: 2rem; letter-spacing: 10px; text-align: center;">
             </div>
-            <div id="verify-result"></div>
+            <button id="verify-otp" style="width: 100%;">AUTHENTICATE</button>
+        </div>
+
+        <div id="delivery-section" class="section-container hidden">
+            <h2>03 // IN TRANSIT</h2>
+            <div class="loading-container">
+                <div style="font-size: 3rem; animation: float 3s infinite ease-in-out;">🛸</div>
+                <h3 style="color: var(--primary);">DRONE EN ROUTE</h3>
+                <div class="progress-track">
+                    <div class="progress-bar" id="delivery-progress"></div>
+                </div>
+                <p style="font-family: 'Roboto Mono'">ETA: <span id="eta-timer">00:45</span></p>
+            </div>
+        </div>
+
+        <div id="verify-section" class="section-container hidden">
+            <h2>04 // BIOMETRIC UNLOCK</h2>
+            <p style="color: #aaa;">Package arrived. Verify identity to release payload.</p>
+            <video id="verify-video" autoplay muted playsinline></video>
+            <canvas id="verify-canvas" class="capture-canvas hidden"></canvas>
+            <div style="text-align: center; margin-top: 15px;">
+                <button id="start-verify-camera">Re-Activate Camera</button>
+                <button id="capture-verify" disabled>Scan Face</button>
+                <button id="submit-verify" disabled style="background: linear-gradient(135deg, #00ff00, #006600); color: white;">Unlock Package</button>
+            </div>
+            <div id="verify-result" style="margin-top: 20px; text-align: center; font-size: 1.2rem; font-weight: bold;"></div>
         </div>
     </div>
 
-    <!-- Right Sidebar -->
-    <div class="sidebar right">
-        <h2>📊 Recent Activity</h2>
-        <div id="activity-feed">
-            <div class="activity-item">
-                <div class="activity-time">Loading...</div>
-                <div class="activity-event">Fetching activity...</div>
+    <div class="panel">
+        <h2><span style="color:var(--accent)">///</span> Inspector</h2>
+
+        <div class="tool-section">
+            <p style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">SEARCH DATABASE</p>
+            <div style="display: flex; gap: 5px;">
+                <input type="number" id="drone-lookup-id" placeholder="ID#" style="padding: 8px;">
+                <button id="btn-lookup" style="padding: 8px 15px; margin: 0;">SCAN</button>
             </div>
+            <div id="drone-details-output" class="json-dump">Select ID to inspect...</div>
+        </div>
+
+        <h2><span style="color:var(--accent)">///</span> Feed</h2>
+        <div id="activity-feed" style="flex: 1; overflow-y: auto;">
+        </div>
+    </div>
+
+    <div class="panel console-panel">
+        <h2 style="font-size: 0.9rem; margin-bottom: 10px; padding-bottom: 5px;">SYSTEM CONSOLE_</h2>
+        <div class="console-output" id="sys-console">
+            <div class="log-entry"><span class="log-time">INIT</span><span class="log-sys">[SYSTEM]</span><span class="log-msg">Interface initialized. Connecting to secure gateway...</span></div>
         </div>
     </div>
 </div>
 
 <script>
+    // --- Global State ---
     let deliveryId = null;
     let registerImageBlob = null;
     let verifyImageBlob = null;
 
-    // Load drone stats
+    // --- System Console Logger ---
+    function log(system, message, type = 'normal') {
+        const consoleEl = document.getElementById('sys-console');
+        const now = new Date();
+        const time = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+
+        let colorClass = 'log-msg';
+        if(type === 'success') colorClass = 'log-success';
+        if(type === 'error') colorClass = 'log-sys'; // Reuse accent color for error
+
+        entry.innerHTML = `<span class="log-time">${time}</span><span class="log-sys">[${system}]</span><span class="${colorClass}">${message}</span>`;
+        consoleEl.appendChild(entry);
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    // --- Radar Visualizer (Simulated) ---
+    function initRadar() {
+        const canvas = document.getElementById('radar-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        function resize() {
+            width = canvas.parentElement.offsetWidth;
+            height = canvas.parentElement.offsetHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const blips = [];
+        for(let i=0; i<5; i++) {
+            blips.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2
+            });
+        }
+
+        function draw() {
+            // Fade effect
+            ctx.fillStyle = 'rgba(0, 10, 20, 0.2)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Grid
+            ctx.strokeStyle = 'rgba(0, 243, 255, 0.1)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for(let x=0; x<width; x+=40) { ctx.moveTo(x,0); ctx.lineTo(x,height); }
+            for(let y=0; y<height; y+=40) { ctx.moveTo(0,y); ctx.lineTo(width,y); }
+            ctx.stroke();
+
+            // Center Base
+            ctx.strokeStyle = '#00f3ff';
+            ctx.beginPath();
+            ctx.arc(width/2, height/2, 5, 0, Math.PI*2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(width/2, height/2, 50, 0, Math.PI*2);
+            ctx.strokeStyle = 'rgba(0, 243, 255, 0.3)';
+            ctx.stroke();
+
+            // Drone Blips
+            ctx.fillStyle = '#ff0055';
+            blips.forEach(b => {
+                b.x += b.vx;
+                b.y += b.vy;
+                if(b.x < 0 || b.x > width) b.vx *= -1;
+                if(b.y < 0 || b.y > height) b.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, 3, 0, Math.PI*2);
+                ctx.fill();
+            });
+
+            requestAnimationFrame(draw);
+        }
+        draw();
+    }
+    initRadar();
+
+    // --- Data Fetching ---
+
     async function loadDroneStats() {
         try {
             const response = await fetch('/api/v1/stats');
@@ -455,35 +532,64 @@
             document.getElementById('active-drones').textContent = data.active || 0;
             document.getElementById('maintenance-drones').textContent = data.inMaintenance || 0;
         } catch (err) {
-            console.error('Failed to load stats:', err);
+            log('NETWORK', 'Failed to fetch stats', 'error');
         }
     }
 
-    // Load recent activity
     async function loadRecentActivity() {
         try {
             const response = await fetch('/api/v1/recent-activity');
             const activities = await response.json();
             const feed = document.getElementById('activity-feed');
+
             feed.innerHTML = activities.map(activity => `
-                    <div class="activity-item">
-                        <div class="activity-time">${activity.time}</div>
-                        <div class="activity-event">${activity.event}</div>
-                        <div class="activity-drone">${activity.drone}</div>
-                    </div>
-                `).join('');
+                <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <div style="color: var(--primary); font-size: 0.75rem;">${activity.time}</div>
+                    <div style="color: #fff; font-size: 0.9rem;">${activity.event}</div>
+                    <div style="color: #666; font-size: 0.75rem;">ID: ${activity.drone}</div>
+                </div>
+            `).join('');
         } catch (err) {
-            console.error('Failed to load activity:', err);
+            console.error(err);
         }
     }
 
-    // Initialize
-    loadDroneStats();
-    loadRecentActivity();
-    setInterval(loadDroneStats, 30000);
-    setInterval(loadRecentActivity, 10000);
+    // --- Tool: Drone Inspector ---
+    document.getElementById('btn-lookup').addEventListener('click', async () => {
+        const id = document.getElementById('drone-lookup-id').value;
+        if(!id) return;
 
-    // Register phase
+        log('USER', `Querying details for Drone #${id}...`);
+        try {
+            const response = await fetch(`/api/v1/droneDetails/${id}`);
+            if(response.ok) {
+                const data = await response.json();
+                document.getElementById('drone-details-output').textContent = JSON.stringify(data, null, 2);
+                log('NETWORK', `Data received for Drone #${id}`, 'success');
+            } else {
+                document.getElementById('drone-details-output').textContent = "Drone not found or offline.";
+                log('NETWORK', `Drone #${id} lookup failed (404)`, 'error');
+            }
+        } catch (e) {
+            log('NETWORK', 'Lookup error', 'error');
+        }
+    });
+
+    // --- Tool: Cooling Filter ---
+    document.getElementById('btn-check-cooling').addEventListener('click', async () => {
+        log('USER', 'Filtering fleet for Cooling Capability...');
+        try {
+            // Using endpoint from controller: /dronesWithCooling/{state}
+            const response = await fetch('/api/v1/dronesWithCooling/true');
+            const ids = await response.json();
+            document.getElementById('cooling-result').innerHTML = `Capable IDs: <span style="color:var(--primary)">${ids.join(', ')}</span>`;
+            log('NETWORK', `Found ${ids.length} cooling-capable drones`, 'success');
+        } catch (e) {
+            log('NETWORK', 'Filter failed', 'error');
+        }
+    });
+
+    // --- Core Flow: Registration ---
     const registerVideo = document.getElementById('register-video');
     const registerCanvas = document.getElementById('register-canvas');
     const emailInput = document.getElementById('email-input');
@@ -495,9 +601,13 @@
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             registerVideo.srcObject = stream;
+            registerVideo.classList.remove('hidden');
+            registerCanvas.classList.add('hidden');
             captureRegisterBtn.disabled = false;
+            log('CAMERA', 'Video stream initialized');
         } catch (err) {
             alert('Could not access camera: ' + err.message);
+            log('CAMERA', 'Access denied', 'error');
         }
     });
 
@@ -506,15 +616,14 @@
         registerCanvas.width = registerVideo.videoWidth;
         registerCanvas.height = registerVideo.videoHeight;
         context.drawImage(registerVideo, 0, 0);
-
         registerCanvas.toBlob((blob) => {
             registerImageBlob = blob;
             registerCanvas.classList.remove('hidden');
             registerVideo.classList.add('hidden');
             submitRegisterBtn.disabled = false;
-
             const stream = registerVideo.srcObject;
-            stream.getTracks().forEach(track => track.stop());
+            if(stream) stream.getTracks().forEach(track => track.stop());
+            log('CAMERA', 'Image captured to memory');
         }, 'image/jpeg');
     });
 
@@ -529,44 +638,39 @@
         formData.append('image', registerImageBlob, 'register.jpg');
         formData.append('email', email);
 
+        log('NETWORK', 'Uploading registration packet...');
+        submitRegisterBtn.disabled = true;
+
         try {
-            submitRegisterBtn.disabled = true;
             const response = await fetch('/api/v1/delivery/register', {
                 method: 'POST',
                 body: formData
             });
-
             const data = await response.json();
 
             if (response.ok) {
                 deliveryId = data.deliveryId;
-                document.getElementById('register-result').innerHTML =
-                    `<div class="result success">✓ ${data.message}</div>`;
+                log('SERVER', `Registered Delivery ID: ${deliveryId}`, 'success');
 
-                setTimeout(() => {
-                    document.getElementById('register-section').classList.add('hidden');
-                    document.getElementById('otp-section').classList.remove('hidden');
-                }, 1500);
+                // Transition
+                document.getElementById('register-section').classList.add('hidden');
+                document.getElementById('otp-section').classList.remove('hidden');
             } else {
                 throw new Error(data.error || 'Registration failed');
             }
         } catch (err) {
-            document.getElementById('register-result').innerHTML =
-                `<div class="result error">✗ Error: ${err.message}</div>`;
+            log('ERROR', err.message, 'error');
             submitRegisterBtn.disabled = false;
         }
     });
 
-    // OTP verification
-    const otpInput = document.getElementById('otp-input');
+    // --- Core Flow: OTP ---
     const verifyOtpBtn = document.getElementById('verify-otp');
-
     verifyOtpBtn.addEventListener('click', async () => {
-        const otp = otpInput.value.trim();
-        if (otp.length !== 6) {
-            alert('Please enter a 6-digit code');
-            return;
-        }
+        const otp = document.getElementById('otp-input').value.trim();
+        if (otp.length !== 6) return alert('Code must be 6 digits');
+
+        log('NETWORK', `Verifying OTP for Delivery ${deliveryId}...`);
 
         try {
             verifyOtpBtn.disabled = true;
@@ -575,76 +679,78 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: emailInput.value, otp: otp })
             });
-
             const data = await response.json();
 
             if (response.ok && data.verified) {
-                document.getElementById('otp-result').innerHTML =
-                    `<div class="result success">✓ ${data.message}</div>`;
+                log('SERVER', 'OTP Authenticated. Dispatching drone.', 'success');
 
-                setTimeout(() => {
-                    document.getElementById('otp-section').classList.add('hidden');
-                    document.getElementById('delivery-section').classList.remove('hidden');
+                document.getElementById('otp-section').classList.add('hidden');
+                document.getElementById('delivery-section').classList.remove('hidden');
 
-                    // Simulate delivery progress
-                    let progress = 0;
-                    const interval = setInterval(() => {
-                        progress += 2;
-                        document.getElementById('delivery-progress').style.width = progress + '%';
-                        if (progress >= 100) {
-                            clearInterval(interval);
-                            setTimeout(() => {
-                                document.getElementById('delivery-section').classList.add('hidden');
-                                document.getElementById('verify-section').classList.remove('hidden');
-                            }, 500);
-                        }
-                    }, 60);
-                }, 1500);
+                // Simulate Delivery
+                let progress = 0;
+                const bar = document.getElementById('delivery-progress');
+                const interval = setInterval(() => {
+                    progress += 1;
+                    bar.style.width = progress + '%';
+
+                    // Random log events during flight
+                    if(progress === 30) log('FLIGHT', 'Drone altitude 400ft. Speed 35mph.');
+                    if(progress === 70) log('FLIGHT', 'Approaching drop zone coordinates.');
+
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        log('FLIGHT', 'Drone arrived at destination.', 'success');
+                        setTimeout(() => {
+                            document.getElementById('delivery-section').classList.add('hidden');
+                            document.getElementById('verify-section').classList.remove('hidden');
+                        }, 500);
+                    }
+                }, 100);
+
             } else {
                 throw new Error(data.message || 'Invalid OTP');
             }
         } catch (err) {
-            document.getElementById('otp-result').innerHTML =
-                `<div class="result error">✗ ${err.message}</div>`;
+            log('ERROR', err.message, 'error');
             verifyOtpBtn.disabled = false;
         }
     });
 
-    // Verify phase
-    const verifyVideo = document.getElementById('verify-video');
-    const verifyCanvas = document.getElementById('verify-canvas');
+    // --- Core Flow: Final Verification ---
     const startVerifyBtn = document.getElementById('start-verify-camera');
     const captureVerifyBtn = document.getElementById('capture-verify');
     const submitVerifyBtn = document.getElementById('submit-verify');
+    const verifyCanvasEl = document.getElementById('verify-canvas');
+    const verifyVideoEl = document.getElementById('verify-video');
 
     startVerifyBtn.addEventListener('click', async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            verifyVideo.srcObject = stream;
+            verifyVideoEl.srcObject = stream;
+            verifyVideoEl.classList.remove('hidden');
+            verifyCanvasEl.classList.add('hidden');
             captureVerifyBtn.disabled = false;
-        } catch (err) {
-            alert('Could not access camera: ' + err.message);
-        }
+        } catch (err) { alert('Camera error'); }
     });
 
     captureVerifyBtn.addEventListener('click', () => {
-        const context = verifyCanvas.getContext('2d');
-        verifyCanvas.width = verifyVideo.videoWidth;
-        verifyCanvas.height = verifyVideo.videoHeight;
-        context.drawImage(verifyVideo, 0, 0);
-
-        verifyCanvas.toBlob((blob) => {
+        const context = verifyCanvasEl.getContext('2d');
+        verifyCanvasEl.width = verifyVideoEl.videoWidth;
+        verifyCanvasEl.height = verifyVideoEl.videoHeight;
+        context.drawImage(verifyVideoEl, 0, 0);
+        verifyCanvasEl.toBlob((blob) => {
             verifyImageBlob = blob;
-            verifyCanvas.classList.remove('hidden');
-            verifyVideo.classList.add('hidden');
+            verifyCanvasEl.classList.remove('hidden');
+            verifyVideoEl.classList.add('hidden');
             submitVerifyBtn.disabled = false;
-
-            const stream = verifyVideo.srcObject;
-            stream.getTracks().forEach(track => track.stop());
+            const stream = verifyVideoEl.srcObject;
+            if(stream) stream.getTracks().forEach(track => track.stop());
         }, 'image/jpeg');
     });
 
     submitVerifyBtn.addEventListener('click', async () => {
+        log('NETWORK', 'Verifying recipient biometrics...');
         const formData = new FormData();
         formData.append('image', verifyImageBlob, 'verify.jpg');
 
@@ -654,27 +760,35 @@
                 method: 'POST',
                 body: formData
             });
-
             const data = await response.json();
 
+            const resultDiv = document.getElementById('verify-result');
             if (response.ok) {
                 if (data.match) {
-                    document.getElementById('verify-result').innerHTML =
-                        `<div class="result success">✓ Identity verified! Match score: ${(data.score * 100).toFixed(1)}%<br>🎉 Delivery complete!</div>`;
+                    const score = (data.score * 100).toFixed(1);
+                    resultDiv.innerHTML = `<span style="color:var(--primary)">ACCESS GRANTED</span><br><span style="font-size:0.8rem">Match Confidence: ${score}%</span>`;
+                    log('SECURITY', `Identity Confirmed (${score}%). Package released.`, 'success');
                 } else {
-                    document.getElementById('verify-result').innerHTML =
-                        `<div class="result error">✗ Identity verification failed. Match score: ${(data.score * 100).toFixed(1)}%<br>Please try again.</div>`;
+                    const score = (data.score * 100).toFixed(1);
+                    resultDiv.innerHTML = `<span style="color:var(--accent)">ACCESS DENIED</span><br><span style="font-size:0.8rem">Match Confidence: ${score}%</span>`;
+                    log('SECURITY', `Identity mismatch (${score}%). Lock engaged.`, 'error');
                     submitVerifyBtn.disabled = false;
                 }
             } else {
-                throw new Error(data.error || 'Verification failed');
+                throw new Error('Verification API error');
             }
         } catch (err) {
-            document.getElementById('verify-result').innerHTML =
-                `<div class="result error">✗ Error: ${err.message}</div>`;
+            log('ERROR', err.message, 'error');
             submitVerifyBtn.disabled = false;
         }
     });
+
+    // Init
+    loadDroneStats();
+    loadRecentActivity();
+    setInterval(loadDroneStats, 10000);
+    setInterval(loadRecentActivity, 15000);
+
 </script>
 </body>
 </html>

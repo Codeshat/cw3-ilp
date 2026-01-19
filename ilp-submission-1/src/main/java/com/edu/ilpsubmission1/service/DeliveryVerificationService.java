@@ -72,6 +72,13 @@ public class DeliveryVerificationService {
         DeliveryData data = deliveryStore.get(deliveryId);
         return data != null && data.isOtpVerified();
     }
+    public String generateOtpForDelivery(String deliveryId, String email) {
+        return otpService.generateOtpForDelivery(deliveryId, email);
+    }
+
+    public boolean verifyOtpForDelivery(String deliveryId, String otp) {
+        return otpService.verifyOtpForDelivery(deliveryId, otp);
+    }
 
     @lombok.Data
     @lombok.AllArgsConstructor
