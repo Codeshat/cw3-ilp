@@ -164,6 +164,11 @@ public class AvailabilityService {
                     double distance = droneService.getDistance(spPos, deliveryPos);
                     int moves = (int) Math.ceil(distance / STEP);
 
+                    if (moves > maxMoves) {
+                        canHandleAll = false;
+                        break;
+                    }
+
                     // ----------- COST -----------
                     if (dispatch.getRequirements() != null &&
                             dispatch.getRequirements().getMaxCost() != null) {

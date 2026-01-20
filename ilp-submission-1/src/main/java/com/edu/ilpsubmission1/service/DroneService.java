@@ -117,7 +117,7 @@ public class DroneService {
             }
         }
         // Inside if the ray crosses an odd number of times
-        return (crossings % 2 == 1);
+        return (crossings % 2 != 0);
     }
 
     /**

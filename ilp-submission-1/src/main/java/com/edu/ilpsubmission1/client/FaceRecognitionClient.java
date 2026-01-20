@@ -43,14 +43,31 @@ public class FaceRecognitionClient {
             }
         });
 
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity =
+                new HttpEntity<>(body, headers);
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(url, requestEntity, Map.class);
+        ResponseEntity<Map> response =
+                restTemplate.postForEntity(url, requestEntity, Map.class);
 
         Map<String, Object> responseBody = response.getBody();
+        if (responseBody == null) {
+            throw new IllegalStateException(
+                    "Face recognition service returned empty response body"
+            );
+        }
+
+        Object matchObj = responseBody.get("match");
+        Object scoreObj = responseBody.get("score");
+
+        if (!(matchObj instanceof Boolean) || !(scoreObj instanceof Number)) {
+            throw new IllegalStateException(
+                    "Invalid response format from face recognition service"
+            );
+        }
+
         return new FaceMatchResponse(
-                (Boolean) responseBody.get("match"),
-                ((Number) responseBody.get("score")).doubleValue(),
+                (Boolean) matchObj,
+                ((Number) scoreObj).doubleValue(),
                 (String) responseBody.get("reason")
         );
     }
