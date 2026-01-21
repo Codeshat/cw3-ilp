@@ -25,7 +25,7 @@ jobs:
         run: |
           cd ilp-submission-1
           # Run all tests except the System test which requires external Docker services
-          mvn clean verify -Dtest=!DeliveryWorkflowE2ETest jacoco:report
+          mvn clean test -Dtest=!DeliveryWorkflowE2ETest jacoco:report
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4

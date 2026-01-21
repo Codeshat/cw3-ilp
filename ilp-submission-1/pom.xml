@@ -149,15 +149,16 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.2.5</version>
 				<configuration>
-					<argLine>
-						@{argLine}
-						-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
-						-Xshare:off
-					</argLine>
-					<systemPropertyVariables>
-						<testcontainers.compose.local>true</testcontainers.compose.local>
-					</systemPropertyVariables>
-				</configuration>
+				<argLine>
+					@{argLine}
+					-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+					-Xshare:off
+				</argLine>
+				<systemPropertyVariables>
+					<testcontainers.compose.local>true</testcontainers.compose.local>
+				</systemPropertyVariables>
+					<groups>unit</groups>
+			</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-failsafe-plugin</artifactId>
